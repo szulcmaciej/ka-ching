@@ -11,7 +11,7 @@ return (
 		{("0" + Math.floor((props.time / 1000) % 60)).slice(-2)}.
 	</span>
 	<span className="digits mili-sec">
-		{("0" + ((props.time / 10) % 100)).slice(-2)}
+		{("0" + Math.round((props.time / 10) % 100)).slice(-2)}
 	</span>
 	</div>
 );

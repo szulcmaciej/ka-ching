@@ -9,13 +9,15 @@ function StopWatch() {
 const [isActive, setIsActive] = useState(false);
 const [isPaused, setIsPaused] = useState(true);
 const [time, setTime] = useState(0);
+const [lastStartTime, setLastStartTime] = useState(0);
+const [elapsedBeforePause, setElapsedBeforePause] = useState(0);
 
 React.useEffect(() => {
 	let interval = null;
 
-	if (isActive && isPaused === false) {
+	if (isActive && !isPaused) {
 	interval = setInterval(() => {
-		setTime((time) => time + 10);
+		setTime((time) => Date.now() - lastStartTime + elapsedBeforePause);
 	}, 10);
 	} else {
 	clearInterval(interval);
@@ -23,20 +25,32 @@ React.useEffect(() => {
 	return () => {
 	clearInterval(interval);
 	};
-}, [isActive, isPaused]);
+}, [isActive, isPaused, lastStartTime, elapsedBeforePause]);
 
 const handleStart = () => {
+	setLastStartTime(Date.now());
+	localStorage.setItem('lastStartTime', lastStartTime);
 	setIsActive(true);
 	setIsPaused(false);
 };
 
 const handlePauseResume = () => {
+	if(isPaused){
+		setLastStartTime(Date.now());
+		localStorage.setItem('lastStartTime', lastStartTime);
+	}
+	else{
+		setElapsedBeforePause(elapsedBeforePause + Date.now() - lastStartTime);
+		localStorage.setItem('elapsedBeforePause', elapsedBeforePause);
+	}
 	setIsPaused(!isPaused);
 };
 
 const handleReset = () => {
 	setIsActive(false);
 	setTime(0);
+	setElapsedBeforePause(0);
+	localStorage.removeItem('elapsedBeforePause');
 };
 
 const hourly_money = 60;
