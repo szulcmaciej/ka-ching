@@ -9,15 +9,30 @@ function StopWatch() {
 const [isActive, setIsActive] = useState(false);
 const [isPaused, setIsPaused] = useState(true);
 const [time, setTime] = useState(0);
-const [lastStartTime, setLastStartTime] = useState(0);
-const [elapsedBeforePause, setElapsedBeforePause] = useState(0);
+const [startTime, setStartTime] = useState(0);
+
+React.useEffect(() => {
+	if(localStorage.getItem('runningStartTime')){
+		setIsActive(true);
+		setIsPaused(false);
+		let start_time_int = parseInt(localStorage.getItem('runningStartTime'));
+		setStartTime(start_time_int);
+	}
+	if(localStorage.getItem('pausedElapsedTime')){
+		setIsActive(true);
+		setIsPaused(true);
+		let elapsed_time_int = localStorage.getItem('pausedElapsedTime');
+		setStartTime(Date.now() - elapsed_time_int);
+		setTime(elapsed_time_int);
+	}
+}, []);
 
 React.useEffect(() => {
 	let interval = null;
 
 	if (isActive && !isPaused) {
 	interval = setInterval(() => {
-		setTime((time) => Date.now() - lastStartTime + elapsedBeforePause);
+		setTime((time) => Date.now() - startTime);
 	}, 10);
 	} else {
 	clearInterval(interval);
@@ -25,23 +40,24 @@ React.useEffect(() => {
 	return () => {
 	clearInterval(interval);
 	};
-}, [isActive, isPaused, lastStartTime, elapsedBeforePause]);
+}, [isActive, isPaused, startTime]);
 
 const handleStart = () => {
-	setLastStartTime(Date.now());
-	localStorage.setItem('lastStartTime', lastStartTime);
+	setStartTime(Date.now());
+	localStorage.setItem('runningStartTime', startTime);
 	setIsActive(true);
 	setIsPaused(false);
 };
 
 const handlePauseResume = () => {
 	if(isPaused){
-		setLastStartTime(Date.now());
-		localStorage.setItem('lastStartTime', lastStartTime);
+		setStartTime(Date.now() - time);
+		localStorage.setItem('runningStartTime', startTime);
+		localStorage.removeItem('pausedElapsedTime');
 	}
 	else{
-		setElapsedBeforePause(elapsedBeforePause + Date.now() - lastStartTime);
-		localStorage.setItem('elapsedBeforePause', elapsedBeforePause);
+		localStorage.setItem('pausedElapsedTime', time);
+		localStorage.removeItem('runningStartTime');
 	}
 	setIsPaused(!isPaused);
 };
@@ -49,8 +65,8 @@ const handlePauseResume = () => {
 const handleReset = () => {
 	setIsActive(false);
 	setTime(0);
-	setElapsedBeforePause(0);
-	localStorage.removeItem('elapsedBeforePause');
+	localStorage.removeItem('pausedElapsedTime');
+	localStorage.removeItem('runningStartTime');
 };
 
 const hourly_money = 60;
