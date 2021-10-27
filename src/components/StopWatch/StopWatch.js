@@ -74,8 +74,8 @@ const currency = "PLN";
 const ka_ching_every_n_minutes = 60;
 const finish_after_hours = 8;
 
-let is_ka_ching_time = time % (ka_ching_every_n_minutes * 60 * 1000) === 0 && time !== 0;
-let is_finish_time = time % (finish_after_hours * 60 * 60 * 1000) === 0 && time !== 0;
+let is_ka_ching_time = time % (ka_ching_every_n_minutes * 60 * 1000) < 10 && time !== 0;
+let is_finish_time = time % (finish_after_hours * 60 * 60 * 1000) < 10 && time !== 0;
 
 if(is_ka_ching_time && !is_finish_time){
 	play_ka_ching();
