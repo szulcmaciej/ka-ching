@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
+import "./Setup.css"
 
-const Setup = () => {
-    const [isSetUp, setIsSetUp] = useState(false);
-    const [currency, setCurrency] = useState('USD')
-    const [hourlyRate, setHourlyRate] = useState(20)
-    const [audioOn, setAudioOn] = useState(true)
-
+const Setup = (props) => {
+    let div_classes = props.visible ? "setup" : "setup hidden";
     return (
-        <div>
-            <h1>Setup</h1>
+        <div className={div_classes}>
+            <p>
+                Currency
+                <input id="currency" value={props.currency} onInput={e => props.setCurrency(e.target.value)} />
+            </p>
+            <p>
+                Hourly rate
+                <input id="hourly-rate" value={props.hourly_rate} onInput={e => props.setHourlyRate(e.target.value)}/>
+            </p>
         </div>
     )
 }

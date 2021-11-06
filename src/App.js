@@ -6,7 +6,6 @@ function App() {
   return (
     <div className="App">
       <div class="clock">
-        <Setup />
         <StopWatch />
       </div>
     </div>
