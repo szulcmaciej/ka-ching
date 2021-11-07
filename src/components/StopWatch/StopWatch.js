@@ -41,7 +41,7 @@ React.useEffect(() => {
 
 	if (isActive && !isPaused) {
 	interval = setInterval(() => {
-		setTime((time) => Date.now() - startTime);
+		setTime(Date.now() - startTime);
 	}, 10);
 	} else {
 	clearInterval(interval);
